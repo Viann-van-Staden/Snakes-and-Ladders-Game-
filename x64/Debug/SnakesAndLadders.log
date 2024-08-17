@@ -1,0 +1,4 @@
+﻿  SnakesAndLadders.cpp
+C:\Users\viava\AppData\Roaming\SpaceEngineers\Mods\MonoTest\Data\SnakesAndLadders\SnakesAndLadders\SnakesAndLadders.cpp(59,21): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\viava\AppData\Roaming\SpaceEngineers\Mods\MonoTest\Data\SnakesAndLadders\SnakesAndLadders\SnakesAndLadders.cpp(88,21): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  SnakesAndLadders.vcxproj -> C:\Users\viava\AppData\Roaming\SpaceEngineers\Mods\MonoTest\Data\SnakesAndLadders\x64\Debug\SnakesAndLadders.exe
