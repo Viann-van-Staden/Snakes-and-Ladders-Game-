@@ -34,85 +34,78 @@ enum Ladder {
     LADDER_THREE_BOTTOM = 15
 };
 
-// Player definitions, add more players here to increase player size. and change below for loop as well.
+// Player definitions
 enum Players {
     PLAYERONE,
     PLAYERTWO
 };
 
-int rollDice(mt19937& gen) { 
-
+int rollDice(mt19937& gen) {
     int min = 1;
     int max = 6;
 
-    // Initialize a random number generator
     uniform_int_distribution<> distrib(min, max);
 
-    int randomValue = distrib(gen);
-
-    return randomValue;  // Return the generated random number
+    return distrib(gen);  // Return the generated random number
 }
 
-
-void switchTurn(int& playerPosition, bool playerTurn) {
-
+void switchTurn(int& playerPosition, bool playerTurn, int& turnCounter) {
     mt19937 gen(time(0));
     int playerRoll = rollDice(gen);
 
     playerPosition += playerRoll;
+    turnCounter++;  // Increment turn counter for this player
 
     string playerNumber = playerTurn ? "One" : "Two";
 
-    cout << "Player " << playerNumber << " rolls: " << playerRoll << " and moves to square " << playerPosition << endl;
+    if (playerPosition > 25) {
+        playerPosition = 25;  // Cap the position at 25 (or loop around if needed)
+    }
 
-    Sleep(1000); 
+    cout << "Player " << playerNumber << " rolls: " << playerRoll << " and moves to square " << playerPosition << endl;
+    Sleep(1000);
 }
 
-
-void Winner(string player) {
-
-    cout << "Player " << player << " wins!" << endl; 
+void Winner(string player, int turnCounter) {
+    cout << "Player " << player << " wins!" << endl;
+    cout << "Player " << player << " took " << turnCounter << " turns to win." << endl;
 
     ofstream WinnerFile("Winner.txt");
 
     WinnerFile << "Player " << player << " wins!" << endl;
+    WinnerFile << "Player " << player << " took " << turnCounter << " turns to win." << endl;
 
     WinnerFile.close();
 }
 
-void playerTurn(int& playerOnePosition, int& playerTwoPosition) {
-
-    bool playerTurn = true; 
-
-
-    mt19937 gen(time(0)); 
+void playerTurn(int& playerOnePosition, int& playerTwoPosition, int& turnCounter) {
+    bool isPlayerOneTurn = true;
 
     while (playerOnePosition < 25 && playerTwoPosition < 25) {
-        if (playerTurn) { 
-            switchTurn(playerOnePosition, playerTurn);   
-            playerTurn = false;
+        if (isPlayerOneTurn) {
+            switchTurn(playerOnePosition, isPlayerOneTurn, turnCounter);
+            isPlayerOneTurn = false;  // Switch to Player Two
         }
         else {
-            switchTurn(playerTwoPosition, playerTurn); 
-            playerTurn = true; 
-        } 
+            switchTurn(playerTwoPosition, isPlayerOneTurn, turnCounter);
+            isPlayerOneTurn = true;  // Switch back to Player One
+        }
     }
 
-    if (playerOnePosition >= 25) { 
-        string player = "One";
-        Winner(player); 
+    if (playerOnePosition >= 25) {
+        Winner("One", turnCounter);
     }
     else if (playerTwoPosition >= 25) {
-        string player = "Two";
-        Winner(player); 
+        Winner("Two", turnCounter);
     }
 }
 
 int main() {
-    int playerOnePosition = 0;  // Initialize positions
-    int playerTwoPosition = 0; 
+    int turnCounter = 0;  // Initialize turn counter
+    int playerOnePosition = 0;  // Initialize player positions
+    int playerTwoPosition = 0;
 
-    playerTurn(playerOnePosition, playerTwoPosition);
+    playerTurn(playerOnePosition, playerTwoPosition, turnCounter);
 
     return 0;
 }
